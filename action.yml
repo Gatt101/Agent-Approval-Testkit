@@ -1,0 +1,47 @@
+name: Agent Approval Testkit
+description: Fail CI when an agent's approval verifier accepts a mutated, replayed, or expired approval.
+branding:
+  icon: shield
+  color: red
+
+inputs:
+  path:
+    description: Directory containing approval-test.toml (or pyproject.toml with [tool.approval-test])
+    default: "."
+  package:
+    description: pip install spec for the testkit (e.g. agent-approval-testkit==0.1.0, or "." in-repo)
+    default: agent-approval-testkit
+  install:
+    description: Extra pip install spec so your adapter can import your app (e.g. "-e ." or "-r requirements.txt")
+    default: ""
+  python-version:
+    description: Python version
+    default: "3.12"
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install
+      shell: bash
+      env:
+        PACKAGE: ${{ inputs.package }}
+        EXTRA: ${{ inputs.install }}
+      run: |
+        pip install "$PACKAGE"
+        if [ -n "$EXTRA" ]; then pip install $EXTRA; fi
+
+    - name: Approval integrity check
+      shell: bash
+      env:
+        TARGET: ${{ inputs.path }}
+      run: |
+        set +e
+        approval-test run "$TARGET" --format markdown --output approval-report.md
+        code=$?
+        cat approval-report.md
+        cat approval-report.md >> "$GITHUB_STEP_SUMMARY"
+        exit $code
