@@ -1,0 +1,39 @@
+[project]
+name = "agent-approval-testkit"
+version = "0.1.0"
+description = "pytest for human-in-the-loop agent approvals: verify the agent executes exactly what the human approved."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+dependencies = ["typer>=0.12", "rich>=13"]
+keywords = ["ai-agents", "human-in-the-loop", "security", "fuzzing", "approvals", "llm"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+    "Topic :: Software Development :: Testing",
+]
+
+[project.scripts]
+approval-test = "approval_testkit.cli:app"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/approval_testkit"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["B008"]  # typer.Option/Argument defaults are the idiom
