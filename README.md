@@ -140,10 +140,6 @@ The Markdown report is added to the job summary; the step fails if any invariant
 This tests **approval integrity** — that an approved action can't be changed, replayed, expired, or
 reused. It is **not** a complete agent security scanner, prompt-injection detector, or policy engine.
 
-## Roadmap
-
-- **v0.2** — OpenAI Agents SDK adapter, resumable approval state, delegated/nested actors
-- **v0.3** — MCP adapter, normalization hooks (paths, URLs, recipients), side-effect simulators, SARIF
 
 ## Contributing
 
